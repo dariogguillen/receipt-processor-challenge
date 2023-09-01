@@ -2,9 +2,14 @@ version: "3"
 services:
   sbt:
     image: sbtscala/scala-sbt:eclipse-temurin-17.0.4_1.7.1_3.2.0
+    user: ${UID}:${GID}
     working_dir: ${PWD}
     volumes:
       - ../:${PWD}
       - ../:/root
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${ETC_PASSWD-/etc/passwd}:/etc/passwd:ro
+      - ${ETC_GROUP-/etc/group}:/etc/group:ro
+      - ${HOME}:${HOME}
     entrypoint:
       - sbt

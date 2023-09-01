@@ -15,6 +15,7 @@ project/plugins/project/
 .lib/
 .bsp/
 .sbt
+.ivy2
 
 
 *.class
