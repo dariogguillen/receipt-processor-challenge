@@ -18,7 +18,7 @@ object Dependencies {
   object Version {
     val circe           = "0.14.6"
     val http4s          = "0.23.23"
-    val log4cats        = "2.4.0"
+    val log4cats        = "2.5.0"
     val logback         = "1.4.11"
     val Munit           = "0.7.29"
     val MunitCatsEffect = "1.0.7"

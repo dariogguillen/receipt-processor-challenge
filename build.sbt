@@ -17,19 +17,22 @@ lazy val root = (project in file("."))
     ).map(_.exclude("org.slf4j", "slf4j-log4j12")),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
-    assembly / assemblyMergeStrategy := {
-      case "module-info.class" => MergeStrategy.discard
-      case x                   => (assembly / assemblyMergeStrategy).value.apply(x)
-    },
     semanticdbEnabled := true,
     semanticdbVersion := scalafixSemanticdb.revision,
-    Compile / scalacOptions ++= Seq(
+    Compile / scalacOptions := Seq(
       "-feature",
       "-unchecked",
       "-deprecation",
       "-Ymacro-annotations",
-      "-Xlint:unused",
-      "-language:postfixOps",
-      "-Wunused:imports"
+      "-language:postfixOps"
+    ),
+    Compile / console / scalacOptions ~= (_.filterNot(_ == "-Xfatal-warnings")),
+    Test / console / scalacOptions ~= (_.filterNot(_ == "-Xfatal-warnings")),
+    Compile / guardrailTasks := GuardrailHelpers.createGuardrailTasks((Compile / sourceDirectory).value / "openapi")(
+      openApiFile =>
+        List(
+          ScalaClient(openApiFile.file, pkg = openApiFile.pkg + ".client", framework = "http4s"),
+          ScalaServer(openApiFile.file, pkg = openApiFile.pkg + ".server", framework = "http4s")
+        )
     )
   )
