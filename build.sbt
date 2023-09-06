@@ -6,12 +6,17 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.11",
     libraryDependencies ++= Seq(
       Dependencies.circe,
+      Dependencies.doobieCore,
+      Dependencies.doobieHikari,
+      Dependencies.doobiePostgres,
       Dependencies.http4sCirce,
       Dependencies.http4sClient,
       Dependencies.http4sDsl,
       Dependencies.http4sServer,
       Dependencies.log4cats,
       Dependencies.logback,
+      Dependencies.postgresql,
+      Dependencies.pureconfig,
       Dependencies.Test.munit,
       Dependencies.Test.munitCE
     ).map(_.exclude("org.slf4j", "slf4j-log4j12")),
