@@ -4,7 +4,7 @@ import cats.effect.{ Async, Resource }
 import cats.syntax.all._
 import com.comcast.ip4s._
 import com.dgg.api.server
-import com.dgg.receiptprocessorchallenge.services.ReceiptProcessorImp
+import com.dgg.receiptprocessorchallenge.services.ReceiptProcessorService
 import doobie.util.transactor.Transactor
 import fs2.io.net.Network
 import org.http4s.ember.server.EmberServerBuilder
@@ -15,7 +15,7 @@ object Server {
 
   def run[F[_]: Async: Network](tx: Transactor[F]): F[Nothing] = {
     for {
-      httpApp <- Resource.eval(new server.Resource[F].routes(new ReceiptProcessorImp[F](tx)).orNotFound.pure[F])
+      httpApp <- Resource.eval(new server.Resource[F].routes(new ReceiptProcessorService[F](tx)).orNotFound.pure[F])
       finalHttpApp = Logger.httpApp(logHeaders = true, logBody = true)(httpApp)
       _ <- EmberServerBuilder
              .default[F]
