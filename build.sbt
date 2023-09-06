@@ -8,6 +8,7 @@ lazy val root = (project in file("."))
       Dependencies.circe,
       Dependencies.doobieCore,
       Dependencies.doobieHikari,
+      Dependencies.doobieJson,
       Dependencies.doobiePostgres,
       Dependencies.http4sCirce,
       Dependencies.http4sClient,
@@ -18,7 +19,8 @@ lazy val root = (project in file("."))
       Dependencies.postgresql,
       Dependencies.pureconfig,
       Dependencies.Test.munit,
-      Dependencies.Test.munitCE
+      Dependencies.Test.munitCE,
+      Dependencies.Test.scalacheck
     ).map(_.exclude("org.slf4j", "slf4j-log4j12")),
     addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),

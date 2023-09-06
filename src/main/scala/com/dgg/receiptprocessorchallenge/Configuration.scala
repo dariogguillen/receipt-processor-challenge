@@ -1,6 +1,5 @@
 package com.dgg.receiptprocessorchallenge
 
-import org.http4s.Uri.Path
 import pureconfig._
 import pureconfig.generic.auto._
 
@@ -12,8 +11,6 @@ final case class AppConfig(
 )
 
 object Configuration {
-
-  implicit val uriReader: ConfigReader[Path] = ConfigReader[String].map(Path.unsafeFromString)
 
   def loadDefault(): Either[ConfigLoadException, AppConfig] =
     ConfigSource.default
