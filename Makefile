@@ -17,7 +17,7 @@ include .env
 COMPOSE_CMD = docker-compose -p $(BRANCH_NAME)
 SBT_MEM = 2048
 SBT_RUN_OPTS = -mem $(SBT_MEM)
-SBT_CMD = $(COMPOSE_CMD) -f cicd/docker-compose.dev.yml run --rm sbt $(SBT_RUN_OPTS)
+SBT_CMD = $(COMPOSE_CMD) -f cicd/docker-compose.dev.yml run --rm --remove-orphans sbt $(SBT_RUN_OPTS)
 
 sbt: start_dependencies
 	$(SBT_CMD) $(CMD)

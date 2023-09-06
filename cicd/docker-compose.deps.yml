@@ -1,8 +1,16 @@
 version: "3"
 services:
-
+  migrations:
+    image: flyway/flyway:6.0.6-alpine
+    command: ["migrate"]
+    volumes:
+      - ../migrations:/flyway/sql
+    depends_on:
+      - postgres
+    env_file:
+      - ../.env
   postgres:
-    image: bitnami/postgresql:latest
+    image: bitnami/postgresql:11.5.0-debian-9-r60
     ports:
       - 5432:5432
     env_file:
