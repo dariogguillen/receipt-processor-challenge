@@ -1,5 +1,6 @@
 package com.dgg.receiptprocessorchallenge.utils
 
+import java.time.LocalDate
 import scala.util.Try
 
 object Validations {
@@ -31,4 +32,8 @@ object Validations {
     if ((l % 3) == 0) Try(price.toDouble).toEither.map(i => Math.round(i * 0.2).toInt)
     else Right(0)
   }
+
+  def validatePurchaseDate(date: LocalDate): Either[Throwable, Int] =
+    if ((date.getDayOfMonth % 2) != 0) Right(6)
+    else Right(0)
 }

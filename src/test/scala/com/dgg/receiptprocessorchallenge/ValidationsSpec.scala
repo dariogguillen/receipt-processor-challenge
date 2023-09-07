@@ -2,10 +2,10 @@ package com.dgg.receiptprocessorchallenge
 
 import io.circe._
 import munit.FunSuite
-
 import com.dgg.receiptprocessorchallenge.utils.EmptyValueException
 import com.dgg.receiptprocessorchallenge.utils.Validations._
 
+import java.time.LocalDate
 import scala.math.BigDecimal.double2bigDecimal
 
 class ValidationsSpec extends FunSuite {
@@ -40,6 +40,10 @@ class ValidationsSpec extends FunSuite {
     itemsFromJson.map(_.map { case (description, price, points) =>
       assert(validateItemDesc(description, price) == Right(points))
     })
+  }
+  test("Validate purchase date") {
+    assert(validatePurchaseDate(LocalDate.parse("2022-01-01")) == Right(6))
+    assert(validatePurchaseDate(LocalDate.parse("2022-03-20")) == Right(0))
   }
 
 }

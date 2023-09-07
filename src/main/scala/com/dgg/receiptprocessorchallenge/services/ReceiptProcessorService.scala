@@ -23,7 +23,8 @@ class ReceiptProcessorService[F[_]: Applicative](
       total25Pts  <- validateTotal25(receipt.total)
       everyTwoPts <- validateEveryTwo(receipt.items.length)
       itemDescPts <- receipt.items.traverse(i => validateItemDesc(i.shortDescription, i.price)).map(_.sum)
-    } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts
+      datePts     <- validatePurchaseDate(receipt.purchaseDate)
+    } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts + datePts
 
   override def receiptProcessPost(respond: Resource.ReceiptProcessPostResponse.type)(
     body: Receipt
