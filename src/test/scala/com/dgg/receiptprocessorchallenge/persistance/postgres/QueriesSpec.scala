@@ -15,9 +15,10 @@ class QueriesSpec extends CatsEffectSuite with BaseSpec {
   implicit val arbReceipt: Arbitrary[Receipt] = Arbitrary(receiptGen)
 
   private val receipt = gen[Receipt]
+  private val points  = gen[Int]
 
   test("validate insertReceiptUpdate") {
-    assertIO(analyzeQuery(ReceiptProcessorQueries.insertReceiptUpdate(receipt)), true)
+    assertIO(analyzeQuery(ReceiptProcessorQueries.insertReceiptUpdate(receipt, points)), true)
   }
 
   protected def analyzeQuery[T](

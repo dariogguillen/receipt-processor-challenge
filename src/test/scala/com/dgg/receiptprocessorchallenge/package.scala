@@ -13,7 +13,6 @@ package object receiptprocessorchallenge {
   def gen_[T](implicit gen: Gen[T]): T    = gen.pureApply(Gen.Parameters.default, Seed.random())
 
   def string: Gen[String]  = Gen.alphaStr.filter(_.nonEmpty)
-  def long: Gen[Long]      = Gen.long.filter(a => a.toString.length <= 2)
   def price: Gen[String]   = Gen.chooseNum(0.0, 99.99).map(_.toString.take(5))
   def date: Gen[LocalDate] = Gen.const(LocalDate.now())
   def time: Gen[String]    = Gen.const(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")))

@@ -14,17 +14,19 @@ object ReceiptProcessorQueries extends PostgresImplicits {
 
   implicit val metaJson: Meta[Json] = new Meta(pgDecoderGet, pgEncoderPut)
 
-  def insertReceiptUpdate(receipt: Receipt): Update0 =
+  def insertReceiptUpdate(receipt: Receipt, points: Int): Update0 =
     sql"""
-         |insert into receipt_processor (retailer, purchase_date, purchase_time, items, total)
+         |insert into receipt_processor (retailer, purchase_date, purchase_time, items, total, points)
          |values (
          |  ${receipt.retailer},
          |  ${receipt.purchaseDate},
          |  ${receipt.purchaseTime},
          |  ${receipt.items.asJson},
-         |  ${receipt.total}
+         |  ${receipt.total},
+         |  $points
          |)
          |""".stripMargin.update
 
-  def insertReceipt(receipt: Receipt): ConnectionIO[UUID] = insertReceiptUpdate(receipt).withUniqueGeneratedKeys("id")
+  def insertReceipt(receipt: Receipt, points: Int): ConnectionIO[UUID] =
+    insertReceiptUpdate(receipt, points).withUniqueGeneratedKeys("id")
 }
