@@ -2,6 +2,7 @@ package com.dgg.receiptprocessorchallenge.services
 
 import cats.Applicative
 import cats.syntax.applicative._
+import cats.syntax.traverse._
 import com.dgg.api.server.definitions.Receipt
 import com.dgg.api.server.{ Handler, Resource }
 import com.dgg.receiptprocessorchallenge.utils.Validations._
@@ -21,7 +22,8 @@ class ReceiptProcessorService[F[_]: Applicative](
       total50Pts  <- validateTotal50(receipt.total)
       total25Pts  <- validateTotal25(receipt.total)
       everyTwoPts <- validateEveryTwo(receipt.items.length)
-    } yield retailerPts + total50Pts + total25Pts + everyTwoPts
+      itemDescPts <- receipt.items.traverse(i => validateItemDesc(i.shortDescription, i.price)).map(_.sum)
+    } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts
 
   override def receiptProcessPost(respond: Resource.ReceiptProcessPostResponse.type)(
     body: Receipt
