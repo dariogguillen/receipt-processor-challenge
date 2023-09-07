@@ -22,4 +22,7 @@ object Validations {
       else 0
     )
 
+  def validateEveryTwo(length: Int): Either[Throwable, Int] =
+    Right(((length - (length % 2)) / 2) * 5)
+
 }

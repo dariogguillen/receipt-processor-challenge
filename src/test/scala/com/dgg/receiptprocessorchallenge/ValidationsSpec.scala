@@ -27,4 +27,10 @@ class ValidationsSpec extends FunSuite {
       .filter(i => !i.endsWith(".00") && !i.endsWith(".25") && !i.endsWith(".50") && !i.endsWith(".75"))
       .foreach(i => assert(validateTotal25(i) == Right(0)))
   }
+  test("Validate every two") {
+    assert(validateEveryTwo(totalRange.take(1).length) == Right(0))
+    assert(validateEveryTwo(totalRange.take(2).length) == Right(5))
+    assert(validateEveryTwo(totalRange.take(3).length) == Right(5))
+    assert(validateEveryTwo(totalRange.take(4).length) == Right(10))
+  }
 }
