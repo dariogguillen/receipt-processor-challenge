@@ -1,6 +1,6 @@
 package com.dgg.receiptprocessorchallenge.utils
 
-import java.time.LocalDate
+import java.time.{ LocalDate, LocalTime }
 import scala.util.Try
 
 object Validations {
@@ -35,5 +35,9 @@ object Validations {
 
   def validatePurchaseDate(date: LocalDate): Either[Throwable, Int] =
     if ((date.getDayOfMonth % 2) != 0) Right(6)
+    else Right(0)
+
+  def validatePurchaseTime(time: LocalTime): Either[Throwable, Int] =
+    if (time.isAfter(LocalTime.of(14, 0)) && time.isBefore(LocalTime.of(16, 0))) Right(10)
     else Right(0)
 }

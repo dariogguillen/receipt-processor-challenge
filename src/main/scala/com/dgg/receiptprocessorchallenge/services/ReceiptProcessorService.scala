@@ -11,6 +11,9 @@ import doobie.util.transactor.Transactor
 import io.circe.Json
 import io.circe.syntax._
 
+import java.time.LocalTime
+import scala.util.Try
+
 class ReceiptProcessorService[F[_]: Applicative](
   tx: Transactor[F]
 ) extends Handler[F] {
@@ -24,7 +27,9 @@ class ReceiptProcessorService[F[_]: Applicative](
       everyTwoPts <- validateEveryTwo(receipt.items.length)
       itemDescPts <- receipt.items.traverse(i => validateItemDesc(i.shortDescription, i.price)).map(_.sum)
       datePts     <- validatePurchaseDate(receipt.purchaseDate)
-    } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts + datePts
+      time        <- Try(LocalTime.parse(receipt.purchaseTime)).toEither
+      timePts     <- validatePurchaseTime(time)
+    } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts + datePts + timePts
 
   override def receiptProcessPost(respond: Resource.ReceiptProcessPostResponse.type)(
     body: Receipt

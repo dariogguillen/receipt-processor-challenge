@@ -5,7 +5,7 @@ import munit.FunSuite
 import com.dgg.receiptprocessorchallenge.utils.EmptyValueException
 import com.dgg.receiptprocessorchallenge.utils.Validations._
 
-import java.time.LocalDate
+import java.time.{ LocalDate, LocalTime }
 import scala.math.BigDecimal.double2bigDecimal
 
 class ValidationsSpec extends FunSuite {
@@ -44,6 +44,11 @@ class ValidationsSpec extends FunSuite {
   test("Validate purchase date") {
     assert(validatePurchaseDate(LocalDate.parse("2022-01-01")) == Right(6))
     assert(validatePurchaseDate(LocalDate.parse("2022-03-20")) == Right(0))
+  }
+  test("Validate purchase time") {
+    assert(validatePurchaseTime(LocalTime.parse("13:00")) == Right(0))
+    assert(validatePurchaseTime(LocalTime.parse("15:00")) == Right(10))
+    assert(validatePurchaseTime(LocalTime.parse("17:00")) == Right(0))
   }
 
 }
