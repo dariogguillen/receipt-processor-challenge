@@ -17,7 +17,10 @@ class ReceiptProcessorService[F[_]: Applicative](
   def validateReceipt(receipt: Receipt): Either[Throwable, Int] =
     for {
       retailerPts <- validateRetailer(receipt.retailer)
-    } yield retailerPts
+      // TODO valid total against item list ???
+      total50Pts <- validateTotal50(receipt.total)
+      total25Pts <- validateTotal25(receipt.total)
+    } yield retailerPts + total50Pts + total25Pts
 
   override def receiptProcessPost(respond: Resource.ReceiptProcessPostResponse.type)(
     body: Receipt
