@@ -5,6 +5,7 @@ import doobie.{ ConnectionIO, Meta }
 import doobie.util.update.Update0
 import doobie.postgres.circe.json.implicits.{ pgDecoderGet, pgEncoderPut }
 import doobie.postgres.implicits._
+import doobie.util.query.Query0
 import io.circe.Json
 import io.circe.syntax._
 
@@ -29,4 +30,9 @@ object ReceiptProcessorQueries extends PostgresImplicits {
 
   def insertReceipt(receipt: Receipt, points: Int): ConnectionIO[UUID] =
     insertReceiptUpdate(receipt, points).withUniqueGeneratedKeys("id")
+
+  def selectReceiptPointsByIdQry(id: UUID): Query0[Int] =
+    sql"select points from receipt_processor where id = $id".query[Int]
+
+  def selectReceiptPointsById(id: UUID): ConnectionIO[Int] = selectReceiptPointsByIdQry(id).unique
 }

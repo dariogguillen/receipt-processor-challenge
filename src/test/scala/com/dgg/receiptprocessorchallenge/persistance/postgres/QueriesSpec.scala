@@ -10,15 +10,21 @@ import munit.CatsEffectSuite
 import org.scalacheck.Arbitrary
 import org.typelevel.log4cats.Logger
 
+import java.util.UUID
+
 class QueriesSpec extends CatsEffectSuite with BaseSpec {
 
   implicit val arbReceipt: Arbitrary[Receipt] = Arbitrary(receiptGen)
 
   private val receipt = gen[Receipt]
   private val points  = gen[Int]
+  private val id      = gen[UUID]
 
   test("validate insertReceiptUpdate") {
     assertIO(analyzeQuery(ReceiptProcessorQueries.insertReceiptUpdate(receipt, points)), true)
+  }
+  test("validate selectReceiptPointsById") {
+    assertIO(analyzeQuery(ReceiptProcessorQueries.selectReceiptPointsByIdQry(id)), true)
   }
 
   protected def analyzeQuery[T](
