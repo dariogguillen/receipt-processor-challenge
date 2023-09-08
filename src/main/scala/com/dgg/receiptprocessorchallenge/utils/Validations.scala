@@ -59,14 +59,5 @@ object Validations {
       datePts     <- validatePurchaseDate(receipt.purchaseDate)
       time        <- Try(LocalTime.parse(receipt.purchaseTime)).toEither
       timePts     <- validatePurchaseTime(time)
-      _ = println(s"""
-                     | retailerPts :$retailerPts
-                     | total50Pts  :$total50Pts
-                     | total25Pts  :$total25Pts 
-                     | everyTwoPts :$everyTwoPts
-                     | itemDescPts :$itemDescPts
-                     | datePts     :$datePts    
-                     | timePts     :$timePts
-                     |""".stripMargin)
     } yield retailerPts + total50Pts + total25Pts + everyTwoPts + itemDescPts + datePts + timePts
 }
