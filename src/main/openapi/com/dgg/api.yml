@@ -32,6 +32,12 @@ paths:
 
                 400:
                     description: The receipt is invalid
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - message
     /receipts/{id}/points:
         get:
             summary: Returns the points awarded for the receipt
@@ -59,6 +65,12 @@ paths:
                                         example: 100
                 404:
                     description: No receipt found for that id
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - id
 
 components:
     schemas:
