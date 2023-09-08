@@ -12,7 +12,10 @@ object Validations {
   def validateRetailer(retailer: String): Either[Throwable, Int] = {
     val str = retailer.trim
     if (str.isEmpty) Left(EmptyValueException("retailer"))
-    else Right(str.length)
+    else {
+      val res = str.toCharArray.filterNot(c => c.isWhitespace || !c.isLetterOrDigit).mkString
+      Right(res.length)
+    }
   }
 
   def validateTotal50(total: String): Either[Throwable, Int] =
