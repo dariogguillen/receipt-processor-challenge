@@ -34,5 +34,5 @@ object ReceiptProcessorQueries extends PostgresImplicits {
   def selectReceiptPointsByIdQry(id: UUID): Query0[Int] =
     sql"select points from receipt_processor where id = $id".query[Int]
 
-  def selectReceiptPointsById(id: UUID): ConnectionIO[Int] = selectReceiptPointsByIdQry(id).unique
+  def selectReceiptPointsById(id: UUID): doobie.ConnectionIO[Option[Int]] = selectReceiptPointsByIdQry(id).option
 }
