@@ -9,6 +9,7 @@ import org.http4s.implicits.http4sLiteralsSyntax
 import org.http4s.{ Method, Request, Uri }
 
 import java.util.UUID
+import scala.concurrent.duration.DurationInt
 
 class ReceiptProcessorServiceSpec extends CatsEffectSuite with BaseSpec {
 
@@ -25,6 +26,7 @@ class ReceiptProcessorServiceSpec extends CatsEffectSuite with BaseSpec {
 
   test("Save receipt and get points") {
     assertIO(
+      IO.sleep(2.seconds) *>
       EmberClientBuilder
         .default[IO]
         .build
@@ -45,6 +47,7 @@ class ReceiptProcessorServiceSpec extends CatsEffectSuite with BaseSpec {
 
   test("Save receipt error") {
     assertIO(
+      IO.sleep(2.seconds) *>
       EmberClientBuilder
         .default[IO]
         .build
@@ -57,4 +60,19 @@ class ReceiptProcessorServiceSpec extends CatsEffectSuite with BaseSpec {
     )
   }
 
+  test("Get points invalid id") {
+    val id = UUID.randomUUID().toString
+    assertIO(
+      IO.sleep(2.seconds) *>
+      EmberClientBuilder
+        .default[IO]
+        .build
+        .use { client =>
+          client
+            .run(getRequest(id))
+            .use(_.body.compile.toList.map(str => new String(str.toArray)))
+        },
+      s"""{"message":"Not Found Receipt with id: $id"}"""
+    )
+  }
 }

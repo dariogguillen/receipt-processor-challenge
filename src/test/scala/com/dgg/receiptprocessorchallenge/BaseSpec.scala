@@ -1,7 +1,7 @@
 package com.dgg.receiptprocessorchallenge
 
+import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import cats.effect.{ IO, OutcomeIO, ResourceIO }
 import doobie.Transactor
 import munit.FunSuite
 import org.typelevel.log4cats.Logger
@@ -21,8 +21,10 @@ trait BaseSpec extends FunSuite {
     logHandler = None
   )
 
-  val resource: ResourceIO[IO[OutcomeIO[Nothing]]] = Server.run[IO](xa).background
+  val (_, release) = Server.run[IO](xa).background.allocated.unsafeRunSync()
 
-  resource.use_.unsafeRunSync()
+  override def afterAll(): Unit =
+    try release.unsafeRunSync()
+    finally super.afterAll()
 
 }

@@ -35,19 +35,19 @@ format:
 	$(SBT_CMD) scalafmt Test/scalafmt scalafmtSbt
 
 start_run: start_dependencies
-	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml up -d -V
+	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml up -d -V --remove-orphans
 
 stop_run: stop_dependencies
 	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml down -v
 
 start_dependencies:
-	$(COMPOSE_CMD) -f cicd/docker-compose.deps.yml up -d -V
+	$(COMPOSE_CMD) -f cicd/docker-compose.deps.yml up -d -V --remove-orphans
 
 stop_dependencies:
 	$(COMPOSE_CMD) -f cicd/docker-compose.deps.yml down -v
 
 test:
-	$(COMPOSE_CMD) -f cicd/docker-compose.dev.yml run --rm --entrypoint "sbt coverage test coverageReport $(SBT_RUN_OPTS)" sbt
+	$(COMPOSE_CMD) -f cicd/docker-compose.dev.yml run --rm --remove-orphans --entrypoint "sbt test $(SBT_RUN_OPTS)" sbt
 
 test-only:
 	$(SBT_CMD) "testOnly $(TEST_CLASS)"
