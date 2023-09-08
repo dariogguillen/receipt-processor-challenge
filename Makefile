@@ -35,7 +35,7 @@ format:
 	$(SBT_CMD) scalafmt Test/scalafmt scalafmtSbt
 
 start_run: start_dependencies
-	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml up -d -V --remove-orphans
+	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml up -d -V
 
 stop_run: stop_dependencies
 	$(COMPOSE_CMD) -f cicd/docker-compose.run.yml down -v
