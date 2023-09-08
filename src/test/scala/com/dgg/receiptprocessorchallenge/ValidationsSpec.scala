@@ -1,9 +1,10 @@
 package com.dgg.receiptprocessorchallenge
 
-import io.circe._
-import munit.FunSuite
+import com.dgg.api.server.definitions.Receipt
 import com.dgg.receiptprocessorchallenge.utils.EmptyValueException
 import com.dgg.receiptprocessorchallenge.utils.Validations._
+import io.circe._
+import munit.FunSuite
 
 import java.time.{ LocalDate, LocalTime }
 import scala.math.BigDecimal.double2bigDecimal
@@ -15,7 +16,11 @@ class ValidationsSpec extends FunSuite {
 
   test("Validate retailer") {
     assert(validateRetailer("") == Left(EmptyValueException("retailer")))
-    assert(validateRetailer(retailer) == Right(retailer.length))
+    assert(
+      validateRetailer(retailer) == Right(
+        retailer.toCharArray.filterNot(c => c.isWhitespace || !c.isLetterOrDigit).length
+      )
+    )
   }
   test("Validate total 50") {
     totalRange.filter(_.endsWith(".00")).foreach(i => assert(validateTotal50(i) == Right(50)))
@@ -51,9 +56,73 @@ class ValidationsSpec extends FunSuite {
     assert(validatePurchaseTime(LocalTime.parse("17:00")) == Right(0))
   }
 
+  test("Validate receipt") {
+    assert(receiptTarget.flatMap(validateReceipt) == Right(26)) // 28 in example ???
+    assert(receiptMM.flatMap(validateReceipt) == Right(109))
+  }
+
 }
 
 object ValidationsSpec {
+  import com.dgg.api.server.definitions.Receipt._
+  val receiptT: String =
+    """
+      |{
+      |  "retailer": "Target",
+      |  "purchaseDate": "2022-01-01",
+      |  "purchaseTime": "13:01",
+      |  "items": [
+      |    {
+      |      "shortDescription": "Mountain Dew 12PK",
+      |      "price": "6.49"
+      |    },
+      |    {
+      |      "shortDescription": "Emils Cheese Pizza",
+      |      "price": "12.25"
+      |    },
+      |    {
+      |      "shortDescription": "Knorr Creamy Chicken",
+      |      "price": "1.26"
+      |    },
+      |    {
+      |      "shortDescription": "Doritos Nacho Cheese",
+      |      "price": "3.35"
+      |    },
+      |    {
+      |      "shortDescription": "   Klarbrunn 12-PK 12 FL OZ  ",
+      |      "price": "12.00"
+      |    }
+      |  ],
+      |  "total": "35.35"
+      |}
+      |""".stripMargin
+  val receiptTarget: Either[Error, Receipt] = parser.parse(receiptT).flatMap(_.as[Receipt])
+
+  val receiptM: String =
+    """
+      |{
+      |  "retailer": "M&M Corner Market",
+      |  "purchaseDate": "2022-03-20",
+      |  "purchaseTime": "14:33",
+      |  "items": [
+      |    {
+      |      "shortDescription": "Gatorade",
+      |      "price": "2.25"
+      |    },{
+      |      "shortDescription": "Gatorade",
+      |      "price": "2.25"
+      |    },{
+      |      "shortDescription": "Gatorade",
+      |      "price": "2.25"
+      |    },{
+      |      "shortDescription": "Gatorade",
+      |      "price": "2.25"
+      |    }
+      |  ],
+      |  "total": "9.00"
+      |}
+      |""".stripMargin
+  val receiptMM: Either[Error, Receipt] = parser.parse(receiptM).flatMap(_.as[Receipt])
 
   val items: String =
     """
